@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
+import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 import { events, alerts } from '@/data/mockData';
-import type { Event, Alert } from '@/types';
+import type { Event, Alert, AlertAction } from '@/types';
 
 const EventsPage: React.FC = () => {
   const router = useRouter();
   const alertId = router.params.alertId || 'a1';
   const [alertInfo, setAlertInfo] = useState<Alert | null>(null);
   const [eventList, setEventList] = useState<Event[]>([]);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [noteText, setNoteText] = useState('');
 
   useEffect(() => {
     const alert = alerts.find(a => a.id === alertId);
     if (alert) {
       setAlertInfo(alert);
-    }
-    const relatedEvents = events.filter(e => e.alertId === alertId);
-    if (relatedEvents.length > 0) {
-      setEventList(relatedEvents);
+      const historyEvents: Event[] = (alert.actionHistory || []).map((action: AlertAction) => ({
+        id: action.id,
+        alertId: action.alertId,
+        title: action.title,
+        type: action.action === 'note' ? 'note' : action.action === 'create' || action.action === 'resolve' ? 'incident' : 'action',
+        description: action.description,
+        operator: action.operator,
+        timestamp: action.timestamp
+      }));
+      if (historyEvents.length > 0) {
+        setEventList(historyEvents);
+      } else {
+        const relatedEvents = events.filter(e => e.alertId === alertId);
+        setEventList(relatedEvents.length > 0 ? relatedEvents : events);
+      }
     } else {
-      setEventList(events);
+      const relatedEvents = events.filter(e => e.alertId === alertId);
+      setEventList(relatedEvents.length > 0 ? relatedEvents : events);
     }
   }, [alertId]);
 
@@ -61,6 +76,8 @@ const EventsPage: React.FC = () => {
         return styles.statusActive;
       case 'acknowledged':
         return styles.statusAcknowledged;
+      case 'suppressed':
+        return styles.statusSuppressed;
       case 'resolved':
         return styles.statusResolved;
       default:
@@ -74,6 +91,8 @@ const EventsPage: React.FC = () => {
         return '活动';
       case 'acknowledged':
         return '已认领';
+      case 'suppressed':
+        return '已静音';
       case 'resolved':
         return '已恢复';
       default:
@@ -107,8 +126,39 @@ const EventsPage: React.FC = () => {
     }
   };
 
+  const formatTime = (timeStr: string) => {
+    return dayjs(timeStr).format('HH:mm');
+  };
+
+  const formatDateTime = (timeStr: string) => {
+    return dayjs(timeStr).format('MM-DD HH:mm');
+  };
+
   const handleAddNote = () => {
-    Taro.showToast({ title: '添加备注功能', icon: 'none' });
+    setNoteText('');
+    setShowNoteModal(true);
+  };
+
+  const handleSaveNote = () => {
+    if (!noteText.trim()) {
+      Taro.showToast({ title: '请输入备注内容', icon: 'none' });
+      return;
+    }
+
+    const newEvent: Event = {
+      id: `e${Date.now()}`,
+      alertId: alertId as string,
+      title: '添加备注',
+      type: 'note',
+      description: noteText,
+      operator: '我',
+      timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss')
+    };
+
+    setEventList(prev => [...prev, newEvent]);
+    setShowNoteModal(false);
+    setNoteText('');
+    Taro.showToast({ title: '备注已添加', icon: 'success' });
   };
 
   const handleResolve = () => {
@@ -121,12 +171,22 @@ const EventsPage: React.FC = () => {
             id: `e${Date.now()}`,
             alertId: alertId as string,
             title: '告警恢复',
-            type: 'action',
-            description: '值班人员确认告警已恢复',
-            operator: '张工',
-            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            type: 'incident',
+            description: '值班人员确认告警已恢复正常',
+            operator: '我',
+            timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss')
           };
           setEventList(prev => [...prev, newEvent]);
+          
+          if (alertInfo) {
+            setAlertInfo({
+              ...alertInfo,
+              status: 'resolved',
+              resolvedBy: '我',
+              resolvedAt: dayjs().format('YYYY-MM-DD HH:mm:ss')
+            });
+          }
+          
           Taro.showToast({ title: '已标记为恢复', icon: 'success' });
         }
       }
@@ -145,16 +205,38 @@ const EventsPage: React.FC = () => {
             <View className={classNames(styles.statusTag, getStatusClass(alertInfo.status))}>
               {getStatusText(alertInfo.status)}
             </View>
-            <Text className={styles.resourceName}>📍 {alertInfo.resource}</Text>
           </View>
+          <View className={styles.alertInfo}>
+            <Text className={styles.infoItem}>📍 {alertInfo.resource}</Text>
+            <Text className={styles.infoItem}>� {formatDateTime(alertInfo.createdAt)}</Text>
+          </View>
+          {alertInfo.acknowledgedBy && (
+            <View className={styles.alertInfo}>
+              <Text className={styles.infoItem}>👤 认领人：{alertInfo.acknowledgedBy}</Text>
+            </View>
+          )}
+          {alertInfo.status === 'suppressed' && alertInfo.suppressedUntil && (
+            <View className={styles.alertInfo}>
+              <Text className={styles.infoItem}>🔇 静音至 {formatTime(alertInfo.suppressedUntil)}</Text>
+            </View>
+          )}
+          {alertInfo.note && (
+            <View className={styles.noteBox}>
+              <Text className={styles.noteLabel}>📝 最新备注：</Text>
+              <Text className={styles.noteText}>{alertInfo.note}</Text>
+            </View>
+          )}
         </View>
       )}
 
       <ScrollView scrollY className={styles.timelineSection}>
-        <View className={styles.sectionTitle}>处理时间线</View>
+        <View className={styles.sectionTitle}>
+          <Text>处理时间线</Text>
+          <Text className={styles.eventCount}>共 {eventList.length} 条</Text>
+        </View>
 
         <View className={styles.timeline}>
-          {eventList.map((event: Event, index: number) => (
+          {eventList.map((event: Event) => (
             <View key={event.id} className={styles.timelineItem}>
               <View className={classNames(styles.timelineDot, getDotClass(event.type))} />
               <View className={styles.timelineContent}>
@@ -164,7 +246,7 @@ const EventsPage: React.FC = () => {
                     <Text className={styles.timelineType}>{event.title}</Text>
                   </View>
                   <Text className={styles.timelineTime}>
-                    {event.timestamp.slice(11, 16)}
+                    {formatTime(event.timestamp)}
                   </Text>
                 </View>
                 <View className={styles.timelineDesc}>{event.description}</View>
@@ -188,6 +270,35 @@ const EventsPage: React.FC = () => {
           </View>
         )}
       </View>
+
+      {showNoteModal && (
+        <View className={styles.modal} onClick={() => setShowNoteModal(false)}>
+          <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <View className={styles.modalTitle}>添加备注</View>
+            <Textarea
+              className={styles.modalInput}
+              placeholder="请输入备注内容..."
+              value={noteText}
+              onInput={(e) => setNoteText(e.detail.value)}
+              maxlength={500}
+            />
+            <View className={styles.modalActions}>
+              <View
+                className={classNames(styles.modalBtn, styles.modalCancel)}
+                onClick={() => setShowNoteModal(false)}
+              >
+                取消
+              </View>
+              <View
+                className={classNames(styles.modalBtn, styles.modalConfirm)}
+                onClick={handleSaveNote}
+              >
+                保存
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

@@ -3,6 +3,7 @@ export type AlertStatus = 'active' | 'acknowledged' | 'suppressed' | 'resolved';
 export type ResourceType = 'host' | 'container' | 'network' | 'storage';
 export type ResourceStatus = 'running' | 'warning' | 'error' | 'stopped';
 export type InspectionStatus = 'pending' | 'in_progress' | 'completed' | 'failed';
+export type ActionType = 'acknowledge' | 'suppress' | 'escalate' | 'note' | 'resolve' | 'create';
 
 export interface OverviewStats {
   serviceHealth: number;
@@ -61,6 +62,21 @@ export interface Alert {
   acknowledgedAt?: string;
   note?: string;
   suppressedUntil?: string;
+  suppressedBy?: string;
+  resolvedBy?: string;
+  resolvedAt?: string;
+  actionHistory?: AlertAction[];
+}
+
+export interface AlertAction {
+  id: string;
+  alertId: string;
+  action: ActionType;
+  title: string;
+  description: string;
+  operator: string;
+  timestamp: string;
+  extra?: Record<string, string>;
 }
 
 export interface Event {
@@ -79,6 +95,15 @@ export interface InspectionTemplate {
   description: string;
   itemCount: number;
   frequency: string;
+  items: InspectionItem[];
+}
+
+export interface InspectionItem {
+  id: string;
+  name: string;
+  description: string;
+  requireScreenshot: boolean;
+  order: number;
 }
 
 export interface InspectionRecord {
@@ -91,6 +116,25 @@ export interface InspectionRecord {
   endTime?: string;
   itemsPassed: number;
   itemsTotal: number;
+  checkItems: CheckedItem[];
+  screenshots: ScreenshotItem[];
+}
+
+export interface CheckedItem {
+  itemId: string;
+  itemName: string;
+  checked: boolean;
+  checkedAt?: string;
+  passed?: boolean;
+  remark?: string;
+}
+
+export interface ScreenshotItem {
+  id: string;
+  url: string;
+  name: string;
+  uploadAt: string;
+  itemId?: string;
 }
 
 export interface ReportMetric {
@@ -110,4 +154,10 @@ export interface DutyRecord {
   name: string;
   alertsHandled: number;
   avgResponseTime: number;
+}
+
+export interface ResourceDetail {
+  resource: Resource;
+  relatedAlerts: Alert[];
+  recentEvents: Event[];
 }

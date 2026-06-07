@@ -4,10 +4,8 @@ import styles from './index.module.scss';
 import classNames from 'classnames';
 import {
   availabilityMetrics,
-  responseTimeTrend,
-  alertTrend,
   alertLevelDistribution,
-  dutyRecords
+  reportDataByPeriod
 } from '@/data/mockData';
 import type { ChartDataPoint, ReportMetric, DutyRecord } from '@/types';
 
@@ -19,26 +17,52 @@ const timeTabs = [
 
 const levelColors = ['#f53f3f', '#ff7d00', '#ffc300', '#ff9a2e', '#722ed1'];
 
+type PeriodKey = 'day' | 'week' | 'month';
+
 const ReportsPage: React.FC = () => {
-  const [activeTime, setActiveTime] = useState('week');
+  const [activeTime, setActiveTime] = useState<PeriodKey>('week');
+
+  const periodData = useMemo(() => {
+    return reportDataByPeriod[activeTime] || reportDataByPeriod.week;
+  }, [activeTime]);
+
+  const { responseTime, alertTrend, dutyRecords } = periodData;
 
   const maxResponseTime = useMemo(() => {
-    return Math.max(...responseTimeTrend.map(d => d.value));
-  }, []);
+    return Math.max(...responseTime.map(d => d.value));
+  }, [responseTime]);
 
   const maxAlertCount = useMemo(() => {
     return Math.max(...alertTrend.map(d => d.value));
-  }, []);
+  }, [alertTrend]);
 
   const totalAlerts = useMemo(() => {
     return alertLevelDistribution.reduce((sum, d) => sum + d.value, 0);
   }, []);
 
+  const avgResponseTime = useMemo(() => {
+    if (responseTime.length === 0) return 0;
+    return Math.round(responseTime.reduce((s, d) => s + d.value, 0) / responseTime.length);
+  }, [responseTime]);
+
+  const minResponseTime = useMemo(() => {
+    return Math.min(...responseTime.map(d => d.value));
+  }, [responseTime]);
+
+  const totalAlertCount = useMemo(() => {
+    return alertTrend.reduce((s, d) => s + d.value, 0);
+  }, [alertTrend]);
+
+  const avgAlertCount = useMemo(() => {
+    if (alertTrend.length === 0) return 0;
+    return Math.round(totalAlertCount / alertTrend.length);
+  }, [alertTrend, totalAlertCount]);
+
   const renderBarChart = (data: ChartDataPoint[], maxValue: number, color: string) => {
     return (
       <View className={styles.chartBars}>
         {data.map((item, index) => {
-          const heightPercent = (item.value / maxValue) * 100;
+          const heightPercent = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
           return (
             <View key={index} className={styles.chartBar}>
               <Text className={styles.barValue}>{item.value}</Text>
@@ -120,12 +144,12 @@ const ReportsPage: React.FC = () => {
           <View className={styles.card}>
             <View className={styles.chartContainer}>
               {renderBarChart(
-                responseTimeTrend,
+                responseTime,
                 maxResponseTime,
                 'linear-gradient(180deg, #4080ff 0%, #165dff 100%)'
               )}
             </View>
-            {renderChartLabels(responseTimeTrend)}
+            {renderChartLabels(responseTime)}
             <View className={styles.statRow}>
               <View className={styles.statItem}>
                 <View className={styles.statValue}>{Math.round(maxResponseTime)}</View>
@@ -133,13 +157,13 @@ const ReportsPage: React.FC = () => {
               </View>
               <View className={styles.statItem}>
                 <View className={styles.statValue}>
-                  {Math.round(responseTimeTrend.reduce((s, d) => s + d.value, 0) / responseTimeTrend.length)}
+                  {avgResponseTime}
                 </View>
                 <View className={styles.statLabel}>均值(ms)</View>
               </View>
               <View className={styles.statItem}>
                 <View className={styles.statValue}>
-                  {Math.min(...responseTimeTrend.map(d => d.value))}
+                  {minResponseTime}
                 </View>
                 <View className={styles.statLabel}>最低(ms)</View>
               </View>
@@ -163,13 +187,13 @@ const ReportsPage: React.FC = () => {
             <View className={styles.statRow}>
               <View className={styles.statItem}>
                 <View className={styles.statValue} style={{ color: '#f53f3f' }}>
-                  {alertTrend.reduce((s, d) => s + d.value, 0)}
+                  {totalAlertCount}
                 </View>
                 <View className={styles.statLabel}>总告警数</View>
               </View>
               <View className={styles.statItem}>
                 <View className={styles.statValue} style={{ color: '#ff7d00' }}>
-                  {Math.round(alertTrend.reduce((s, d) => s + d.value, 0) / alertTrend.length)}
+                  {avgAlertCount}
                 </View>
                 <View className={styles.statLabel}>日均告警</View>
               </View>

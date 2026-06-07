@@ -6,7 +6,8 @@ export default defineAppConfig({
     'pages/inspection/index',
     'pages/reports/index',
     'pages/events/index',
-    'pages/settings/index'
+    'pages/settings/index',
+    'pages/resource-detail/index'
   ],
   window: {
     backgroundTextStyle: 'light',

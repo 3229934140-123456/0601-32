@@ -1,0 +1,352 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, #3b7eff 100%);
+  padding: $spacing-lg $page-padding;
+  padding-top: calc(#{$spacing-lg} + env(safe-area-inset-top));
+  color: $color-text-white;
+}
+
+.backBtn {
+  font-size: $font-size-md;
+  margin-bottom: $spacing-md;
+  opacity: 0.9;
+}
+
+.resourceBasic {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.resourceIcon {
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+}
+
+.resourceInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resourceName {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-xs;
+  @include text-ellipsis;
+}
+
+.resourceMeta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.resourceType {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+}
+
+.statusBadge {
+  padding: 6rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.statusRunning {
+  background: rgba(0, 180, 42, 0.3);
+  color: #fff;
+}
+
+.statusWarning {
+  background: rgba(255, 125, 0, 0.3);
+  color: #fff;
+}
+
+.statusError {
+  background: rgba(245, 63, 63, 0.3);
+  color: #fff;
+}
+
+.statusStopped {
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.content {
+  padding: $spacing-md $page-padding;
+  padding-bottom: 120rpx;
+}
+
+.section {
+  margin-bottom: $spacing-lg;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.sectionCount {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.infoCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.infoLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  text-align: right;
+  flex: 1;
+  margin-left: $spacing-md;
+}
+
+.metricsCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.metricItem {
+  padding: $spacing-sm 0;
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+}
+
+.metricName {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.metricValue {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.metricBar {
+  height: 12rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.metricFill {
+  height: 100%;
+  border-radius: $radius-round;
+  transition: width 0.3s ease;
+}
+
+.alertList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.alertItem {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  display: flex;
+  box-shadow: $shadow-card;
+}
+
+.alertLevelBar {
+  width: 8rpx;
+  flex-shrink: 0;
+}
+
+.levelCritical { background: $color-error; }
+.levelMajor { background: $color-warning; }
+.levelMinor { background: #ffc300; }
+.levelWarning { background: $color-warning; }
+.levelInfo { background: $color-info; }
+
+.alertContent {
+  flex: 1;
+  padding: $spacing-md;
+  min-width: 0;
+}
+
+.alertHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-xs;
+}
+
+.alertTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  flex: 1;
+  @include text-ellipsis;
+  margin-right: $spacing-sm;
+}
+
+.alertDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  @include text-ellipsis-multi(2);
+  margin-bottom: $spacing-xs;
+}
+
+.alertFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alertTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.levelBadge {
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  flex-shrink: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 200rpx 0;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: $spacing-md;
+  display: block;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.emptyCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  text-align: center;
+  box-shadow: $shadow-card;
+}
+
+.eventList {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.eventItem {
+  display: flex;
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+  position: relative;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.eventDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  background: $color-primary;
+  flex-shrink: 0;
+  margin-top: 8rpx;
+}
+
+.eventContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.eventTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.eventTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.eventDesc {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.eventOperator {
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}

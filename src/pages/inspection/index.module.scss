@@ -360,3 +360,168 @@
 .uploadIcon {
   font-size: 40rpx;
 }
+
+.recordDetail {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.sectionSubtitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+  margin-top: $spacing-md;
+  
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.itemCountText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  font-weight: $font-weight-regular;
+}
+
+.checkItemList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.checkItem {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: flex-start;
+  padding: $spacing-sm;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+}
+
+.checkItemDone {
+  background: $color-success-bg;
+}
+
+.checkDot {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: $radius-round;
+  background: $color-bg-hover;
+  color: $color-text-tertiary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  flex-shrink: 0;
+}
+
+.checkDotDone {
+  background: $color-success;
+  color: $color-text-white;
+}
+
+.checkItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.checkItemName {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  margin-bottom: 4rpx;
+}
+
+.checkItemTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.checkItemPending {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.screenshotSection {
+  margin-top: $spacing-md;
+}
+
+.screenshotGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.screenshotItem {
+  width: calc(33.33% - 16rpx);
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.screenshotImg {
+  width: 100%;
+  height: 160rpx;
+  border-radius: $radius-sm;
+  background: $color-bg-hover;
+}
+
+.screenshotName {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  @include text-ellipsis;
+}
+
+.screenshotTime {
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+}
+
+.expandHint {
+  text-align: center;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-md;
+  padding-top: $spacing-sm;
+  border-top: 2rpx solid $color-divider;
+}
+
+.previewModal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+}
+
+.previewClose {
+  position: absolute;
+  top: 60rpx;
+  right: 40rpx;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: $radius-round;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-lg;
+}
+
+.progressFailed {
+  background: $color-error;
+}

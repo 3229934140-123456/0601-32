@@ -49,6 +49,8 @@
   display: flex;
   gap: $spacing-sm;
   margin-top: $spacing-md;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .statusTab {
@@ -58,6 +60,7 @@
   color: $color-text-secondary;
   background: $color-bg-hover;
   transition: all $transition-base;
+  flex-shrink: 0;
 }
 
 .statusTabActive {
@@ -79,6 +82,7 @@
   box-shadow: $shadow-card;
   position: relative;
   overflow: hidden;
+  transition: all $transition-base;
 }
 
 .alertLeftBar {
@@ -119,30 +123,11 @@
   font-weight: $font-weight-medium;
 }
 
-.badgeCritical {
-  background: $color-error-bg;
-  color: $color-error;
-}
-
-.badgeMajor {
-  background: $color-warning-bg;
-  color: $color-warning;
-}
-
-.badgeMinor {
-  background: rgba(255, 195, 0, 0.15);
-  color: #d4a100;
-}
-
-.badgeWarning {
-  background: $color-warning-bg;
-  color: $color-warning;
-}
-
-.badgeInfo {
-  background: $color-info-bg;
-  color: $color-info;
-}
+.badgeCritical { background: $color-error-bg; color: $color-error; }
+.badgeMajor { background: $color-warning-bg; color: $color-warning; }
+.badgeMinor { background: rgba(255, 195, 0, 0.15); color: #d4a100; }
+.badgeWarning { background: $color-warning-bg; color: $color-warning; }
+.badgeInfo { background: $color-info-bg; color: $color-info; }
 
 .alertDesc {
   font-size: $font-size-md;
@@ -156,14 +141,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: $spacing-md;
-  border-top: 2rpx solid $color-divider;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
 }
 
 .metaLeft {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: $spacing-md;
+  align-items: center;
 }
 
 .metaItem {
@@ -174,9 +160,7 @@
   gap: $spacing-xs;
 }
 
-.metaIcon {
-  font-size: $font-size-md;
-}
+.metaIcon { font-size: $font-size-md; }
 
 .statusTag {
   font-size: $font-size-xs;
@@ -184,24 +168,107 @@
   border-radius: $radius-sm;
 }
 
-.tagActive {
-  background: $color-error-bg;
-  color: $color-error;
-}
+.tagActive { background: $color-error-bg; color: $color-error; }
+.tagAcknowledged { background: $color-primary-bg; color: $color-primary; }
+.tagSuppressed { background: $color-bg-hover; color: $color-text-tertiary; }
+.tagResolved { background: $color-success-bg; color: $color-success; }
 
-.tagAcknowledged {
-  background: $color-primary-bg;
-  color: $color-primary;
-}
-
-.tagSuppressed {
-  background: $color-bg-hover;
+.suppressInfo {
+  font-size: $font-size-xs;
   color: $color-text-tertiary;
+  background: $color-bg-hover;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
 }
 
-.tagResolved {
-  background: $color-success-bg;
-  color: $color-success;
+.expandHint {
+  text-align: center;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 2rpx solid $color-divider;
+}
+
+.actionHistory {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.historyTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.historyItem {
+  display: flex;
+  gap: $spacing-sm;
+  padding-left: $spacing-sm;
+  position: relative;
+}
+
+.historyDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+  margin-top: 6rpx;
+  background: $color-primary;
+}
+
+.dotAction { background: $color-primary; }
+.dotIncident { background: $color-error; }
+.dotNote { background: $color-info; }
+
+.historyContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.historyAction {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.historyTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.historyDesc {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: 1.4;
+}
+
+.historyOperator {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
 }
 
 .actionBar {
@@ -210,10 +277,12 @@
   margin-top: $spacing-md;
   padding-top: $spacing-md;
   border-top: 2rpx solid $color-divider;
+  flex-wrap: wrap;
 }
 
 .actionBtn {
   flex: 1;
+  min-width: 120rpx;
   height: 64rpx;
   border-radius: $radius-md;
   display: flex;
@@ -230,28 +299,14 @@
   }
 }
 
-.btnPrimary {
-  background: $color-primary-bg;
-  color: $color-primary;
-}
-
-.btnWarning {
-  background: $color-warning-bg;
-  color: $color-warning;
-}
-
-.btnSuccess {
-  background: $color-success-bg;
-  color: $color-success;
-}
-
-.btnDanger {
-  background: $color-error-bg;
-  color: $color-error;
-}
+.btnPrimary { background: $color-primary-bg; color: $color-primary; }
+.btnWarning { background: $color-warning-bg; color: $color-warning; }
+.btnSuccess { background: $color-success-bg; color: $color-success; }
+.btnDanger { background: $color-error-bg; color: $color-error; }
+.btnInfo { background: $color-info-bg; color: $color-info; }
 
 .noteBox {
-  background: $color-bg-hover;
+  background: $color-bg-page;
   border-radius: $radius-md;
   padding: $spacing-sm $spacing-md;
   margin-top: $spacing-sm;
@@ -270,22 +325,12 @@
   padding: 160rpx 0;
 }
 
-.emptyIcon {
-  font-size: 100rpx;
-  margin-bottom: $spacing-md;
-}
-
-.emptyText {
-  font-size: $font-size-md;
-  color: $color-text-tertiary;
-}
+.emptyIcon { font-size: 100rpx; margin-bottom: $spacing-md; }
+.emptyText { font-size: $font-size-md; color: $color-text-tertiary; }
 
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
@@ -338,15 +383,8 @@
   transition: all $transition-base;
 }
 
-.modalCancel {
-  background: $color-bg-hover;
-  color: $color-text-secondary;
-}
-
-.modalConfirm {
-  background: $color-primary;
-  color: $color-text-white;
-}
+.modalCancel { background: $color-bg-hover; color: $color-text-secondary; }
+.modalConfirm { background: $color-primary; color: $color-text-white; }
 
 .timeOptions {
   display: flex;
@@ -362,9 +400,13 @@
   font-size: $font-size-sm;
   color: $color-text-secondary;
   transition: all $transition-base;
+  flex: 1;
+  min-width: 120rpx;
+  text-align: center;
 }
 
 .timeOptionActive {
   background: $color-primary-bg;
   color: $color-primary;
+  font-weight: $font-weight-medium;
 }

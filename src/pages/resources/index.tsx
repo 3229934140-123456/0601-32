@@ -98,7 +98,7 @@ const ResourcesPage: React.FC = () => {
   };
 
   const handleResourceClick = (resource: Resource) => {
-    Taro.showToast({ title: `查看 ${resource.name} 详情`, icon: 'none' });
+    Taro.navigateTo({ url: `/pages/resource-detail/index?id=${resource.id}` });
   };
 
   const renderMeters = (resource: Resource) => {
