@@ -1,0 +1,264 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.filterBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: $color-bg-card;
+  padding: $spacing-md $page-padding;
+  box-shadow: $shadow-float;
+}
+
+.filterTabs {
+  display: flex;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  padding: 6rpx;
+}
+
+.filterTab {
+  flex: 1;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  border-radius: $radius-sm;
+  transition: all $transition-base;
+}
+
+.tabActive {
+  background: $color-bg-card;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+  box-shadow: $shadow-card;
+}
+
+.statsBar {
+  display: flex;
+  justify-content: space-around;
+  padding: $spacing-md $page-padding;
+  background: $color-bg-card;
+  margin-bottom: $spacing-sm;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNum {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.statLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+}
+
+.resourceList {
+  padding: 0 $page-padding;
+  padding-bottom: 120rpx;
+}
+
+.resourceCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.resourceName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  flex: 1;
+}
+
+.statusBadge {
+  padding: 6rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
+.statusRunning {
+  background: $color-success-bg;
+  color: $color-success;
+}
+
+.statusWarning {
+  background: $color-warning-bg;
+  color: $color-warning;
+}
+
+.statusError {
+  background: $color-error-bg;
+  color: $color-error;
+}
+
+.statusStopped {
+  background: $color-bg-hover;
+  color: $color-text-tertiary;
+}
+
+.resourceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.infoValue {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.meterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.meterItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.meterLabel {
+  width: 80rpx;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.meterBar {
+  flex: 1;
+  height: 12rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.meterFill {
+  height: 100%;
+  border-radius: $radius-round;
+  transition: width 0.3s ease;
+}
+
+.meterValue {
+  width: 80rpx;
+  text-align: right;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 120rpx 0;
+}
+
+.emptyIcon {
+  font-size: 100rpx;
+  margin-bottom: $spacing-md;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.typeIcon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.iconHost {
+  background: rgba(22, 93, 255, 0.1);
+}
+
+.iconContainer {
+  background: rgba(0, 180, 42, 0.1);
+}
+
+.iconNetwork {
+  background: rgba(255, 125, 0, 0.1);
+}
+
+.iconStorage {
+  background: rgba(114, 46, 209, 0.1);
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.searchIcon {
+  font-size: $font-size-lg;
+  color: $color-text-tertiary;
+  margin-right: $spacing-sm;
+}
+
+.searchInput {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  background: transparent;
+}

@@ -1,0 +1,381 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: $spacing-lg $page-padding $spacing-xl;
+  color: $color-text-white;
+  border-radius: 0 0 40rpx 40rpx;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.greeting {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+}
+
+.time {
+  font-size: $font-size-sm;
+  opacity: 0.8;
+  margin-top: $spacing-xs;
+}
+
+.settingBtn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: $radius-round;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-lg;
+}
+
+.healthSection {
+  text-align: center;
+  padding: $spacing-md 0;
+}
+
+.healthLabel {
+  font-size: $font-size-md;
+  opacity: 0.9;
+  margin-bottom: $spacing-sm;
+}
+
+.healthValue {
+  font-size: 96rpx;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  margin-bottom: $spacing-xs;
+}
+
+.healthUnit {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-normal;
+}
+
+.healthDesc {
+  font-size: $font-size-sm;
+  opacity: 0.8;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: space-around;
+  margin-top: $spacing-lg;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statValue {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+}
+
+.statLabel {
+  font-size: $font-size-sm;
+  opacity: 0.8;
+  margin-top: $spacing-xs;
+}
+
+.content {
+  padding: 0 $page-padding;
+  margin-top: -$spacing-lg;
+}
+
+.section {
+  margin-bottom: $spacing-lg;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.sectionMore {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  padding: $spacing-lg;
+}
+
+.metricGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.metricCard {
+  width: calc(50% - 12rpx);
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.metricName {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+}
+
+.metricTrend {
+  font-size: $font-size-xs;
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+}
+
+.trendUp {
+  color: $color-error;
+  background: $color-error-bg;
+}
+
+.trendDown {
+  color: $color-success;
+  background: $color-success-bg;
+}
+
+.trendStable {
+  color: $color-text-tertiary;
+  background: $color-bg-hover;
+}
+
+.metricValue {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  line-height: 1;
+  margin-bottom: $spacing-xs;
+}
+
+.metricUnit {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  font-weight: $font-weight-normal;
+}
+
+.metricBar {
+  height: 8rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-round;
+  overflow: hidden;
+  margin-top: $spacing-sm;
+}
+
+.metricBarFill {
+  height: 100%;
+  border-radius: $radius-round;
+  transition: width 0.3s ease;
+}
+
+.barNormal {
+  background: $color-success;
+}
+
+.barWarning {
+  background: $color-warning;
+}
+
+.barError {
+  background: $color-error;
+}
+
+.topologyWrap {
+  position: relative;
+  height: 320rpx;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  margin-top: $spacing-sm;
+  overflow: hidden;
+}
+
+.topologyCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: $radius-round;
+  background: $color-primary-bg;
+  border: 4rpx solid $color-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+  z-index: 2;
+}
+
+.topologyNodes {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.topologyNode {
+  position: absolute;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: $radius-md;
+  background: $color-bg-card;
+  border: 2rpx solid $color-border;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  text-align: center;
+  padding: $spacing-xs;
+}
+
+.nodeStatus {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  margin-bottom: 6rpx;
+}
+
+.nodeRunning {
+  background: $color-success;
+  box-shadow: 0 0 8rpx $color-success;
+}
+
+.nodeWarning {
+  background: $color-warning;
+  box-shadow: 0 0 8rpx $color-warning;
+}
+
+.nodeError {
+  background: $color-error;
+  box-shadow: 0 0 8rpx $color-error;
+}
+
+.riskList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.riskItem {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+}
+
+.riskLevel {
+  width: 8rpx;
+  height: 60rpx;
+  border-radius: $radius-sm;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.levelCritical {
+  background: $color-error;
+}
+
+.levelMajor {
+  background: $color-warning;
+}
+
+.levelMinor {
+  background: $color-warning-light;
+}
+
+.levelWarning {
+  background: $color-warning;
+}
+
+.levelInfo {
+  background: $color-info;
+}
+
+.riskContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.riskTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.riskDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-xs;
+  @include text-ellipsis;
+}
+
+.riskTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-left: $spacing-md;
+  flex-shrink: 0;
+}
+
+.quickActions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.actionItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.actionIcon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-bottom: $spacing-sm;
+}
+
+.actionLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}

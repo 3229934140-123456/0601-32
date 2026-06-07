@@ -1,0 +1,243 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.header {
+  background: $color-bg-card;
+  padding: $spacing-lg $page-padding;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.alertTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.alertMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  align-items: center;
+}
+
+.levelBadge {
+  padding: 6rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.levelCritical {
+  background: $color-error-bg;
+  color: $color-error;
+}
+
+.levelMajor {
+  background: $color-warning-bg;
+  color: $color-warning;
+}
+
+.levelMinor {
+  background: rgba(255, 195, 0, 0.15);
+  color: #d4a100;
+}
+
+.levelWarning {
+  background: $color-warning-bg;
+  color: $color-warning;
+}
+
+.levelInfo {
+  background: $color-info-bg;
+  color: $color-info;
+}
+
+.statusTag {
+  padding: 6rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+}
+
+.statusActive {
+  background: $color-error-bg;
+  color: $color-error;
+}
+
+.statusAcknowledged {
+  background: $color-primary-bg;
+  color: $color-primary;
+}
+
+.statusResolved {
+  background: $color-success-bg;
+  color: $color-success;
+}
+
+.resourceName {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.timelineSection {
+  padding: 0 $page-padding;
+  padding-bottom: 120rpx;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 40rpx;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 12rpx;
+  top: 0;
+  bottom: 0;
+  width: 4rpx;
+  background: $color-border;
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: $spacing-lg;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.timelineDot {
+  position: absolute;
+  left: -34rpx;
+  top: 6rpx;
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: $radius-round;
+  background: $color-bg-card;
+  border: 4rpx solid $color-primary;
+  z-index: 1;
+}
+
+.dotIncident {
+  border-color: $color-error;
+  background: $color-error-bg;
+}
+
+.dotAction {
+  border-color: $color-primary;
+  background: $color-primary-bg;
+}
+
+.dotNote {
+  border-color: $color-info;
+  background: $color-info-bg;
+}
+
+.timelineContent {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+}
+
+.timelineType {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.timelineTime {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.timelineDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.6;
+  margin-bottom: $spacing-sm;
+}
+
+.timelineOperator {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.operatorIcon {
+  font-size: $font-size-sm;
+}
+
+.actionBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $color-bg-card;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: $spacing-md;
+  z-index: 100;
+}
+
+.actionBtn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: $radius-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+}
+
+.btnSecondary {
+  background: $color-bg-hover;
+  color: $color-text-secondary;
+}
+
+.btnPrimary {
+  background: $color-primary;
+  color: $color-text-white;
+}
+
+.btnSuccess {
+  background: $color-success;
+  color: $color-text-white;
+}
+
+.typeIcon {
+  margin-right: $spacing-xs;
+  font-size: $font-size-md;
+}
