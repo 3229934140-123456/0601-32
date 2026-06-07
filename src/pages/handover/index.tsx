@@ -11,11 +11,10 @@ import type { Alert, InspectionRecord, RiskItem, HandoverRecord } from '@/types'
 type TabType = 'current' | 'history';
 
 const HandoverPage: React.FC = () => {
-  const alerts = useAppStore(state => state.alerts);
-  const inspectionRecords = useAppStore(state => state.inspectionRecords);
   const handoverRecords = useAppStore(state => state.handoverRecords);
   const addHandoverRecord = useAppStore(state => state.addHandoverRecord);
   const confirmHandover = useAppStore(state => state.confirmHandover);
+  const generateHandoverSummary = useAppStore(state => state.generateHandoverSummary);
 
   const [activeTab, setActiveTab] = useState<TabType>('current');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -25,20 +24,8 @@ const HandoverPage: React.FC = () => {
   const shiftOptions = ['白班', '夜班', '大夜班'];
 
   const summary = useMemo(() => {
-    const unresolvedAlerts = alerts.filter(a => a.status !== 'resolved');
-    const suppressedAlerts = alerts.filter(
-      a => a.status === 'suppressed' && a.suppressedUntil && dayjs(a.suppressedUntil).isAfter(dayjs())
-    );
-    const pendingInspections = inspectionRecords.filter(r => r.status === 'in_progress');
-
-    return {
-      unresolvedAlerts,
-      suppressedAlerts,
-      inProgressEvents: [],
-      pendingInspections,
-      todayRisks
-    };
-  }, [alerts, inspectionRecords]);
+    return generateHandoverSummary();
+  }, [generateHandoverSummary]);
 
   const handleCreateHandover = () => {
     setShowCreateModal(true);
@@ -125,6 +112,12 @@ const HandoverPage: React.FC = () => {
                 </View>
                 <View className={styles.summaryItem}>
                   <Text className={styles.summaryNum} style={{ color: '#ff7d00' }}>
+                    {summary.inProgressEvents.length}
+                  </Text>
+                  <Text className={styles.summaryLabel}>进行中事件</Text>
+                </View>
+                <View className={styles.summaryItem}>
+                  <Text className={styles.summaryNum} style={{ color: '#ffc300' }}>
                     {summary.suppressedAlerts.length}
                   </Text>
                   <Text className={styles.summaryLabel}>已静音告警</Text>
@@ -134,12 +127,6 @@ const HandoverPage: React.FC = () => {
                     {summary.pendingInspections.length}
                   </Text>
                   <Text className={styles.summaryLabel}>进行中巡检</Text>
-                </View>
-                <View className={styles.summaryItem}>
-                  <Text className={styles.summaryNum} style={{ color: '#722ed1' }}>
-                    {summary.todayRisks.length}
-                  </Text>
-                  <Text className={styles.summaryLabel}>今日风险</Text>
                 </View>
               </View>
             </View>
@@ -160,6 +147,48 @@ const HandoverPage: React.FC = () => {
                   ))}
                   {summary.unresolvedAlerts.length > 3 && (
                     <Text className={styles.moreHint}>还有 {summary.unresolvedAlerts.length - 3} 条...</Text>
+                  )}
+                </View>
+              </View>
+            )}
+
+            {summary.inProgressEvents.length > 0 && (
+              <View className={styles.sectionCard}>
+                <View className={styles.sectionHeader}>
+                  <Text className={styles.sectionTitle}>⚡ 进行中事件</Text>
+                  <Text className={styles.sectionCount}>{summary.inProgressEvents.length} 件</Text>
+                </View>
+                <View className={styles.eventList}>
+                  {summary.inProgressEvents.slice(0, 3).map(event => {
+                    const alert = summary.unresolvedAlerts.find(a => a.id === event.alertId);
+                    const lastAction = alert?.actionHistory?.[0];
+                    const statusText = alert?.status === 'acknowledged' ? '处理中' : '待认领';
+                    return (
+                      <View key={event.id} className={styles.eventRow}>
+                        <View className={styles.eventMain}>
+                          <Text className={styles.eventTitle}>{event.title}</Text>
+                          <View className={styles.eventMetaRow}>
+                            <View className={classNames(
+                              styles.statusTag,
+                              alert?.status === 'acknowledged' ? styles.statusTagProcessing : styles.statusTagPending
+                            )}>
+                              {statusText}
+                            </View>
+                            {lastAction && (
+                              <Text className={styles.eventAction}>
+                                最后动作：{lastAction.title}
+                              </Text>
+                            )}
+                          </View>
+                        </View>
+                        <Text className={styles.eventTime}>
+                          {lastAction ? dayjs(lastAction.timestamp).format('HH:mm') : dayjs(event.timestamp).format('HH:mm')}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                  {summary.inProgressEvents.length > 3 && (
+                    <Text className={styles.moreHint}>还有 {summary.inProgressEvents.length - 3} 件...</Text>
                   )}
                 </View>
               </View>
