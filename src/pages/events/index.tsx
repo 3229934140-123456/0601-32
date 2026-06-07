@@ -15,6 +15,7 @@ const EventsPage: React.FC = () => {
   const addEventNote = useAppStore(state => state.addEventNote);
   const resolveAlert = useAppStore(state => state.resolveAlert);
   const events = useAppStore(state => state.events);
+  const getInspectionById = useAppStore(state => state.getInspectionById);
 
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteText, setNoteText] = useState('');
@@ -179,6 +180,19 @@ const EventsPage: React.FC = () => {
     });
   };
 
+  const goToInspection = (inspectionId: string) => {
+    Taro.switchTab({
+      url: '/pages/inspection/index',
+      success: () => {
+        Taro.showToast({ title: '跳转到巡检记录', icon: 'none' });
+      }
+    });
+  };
+
+  const goBack = () => {
+    Taro.navigateBack();
+  };
+
   const slaItems = alertInfo ? getSlaInfo(alertInfo) : [];
 
   return (
@@ -212,6 +226,17 @@ const EventsPage: React.FC = () => {
             <View className={styles.noteBox}>
               <Text className={styles.noteLabel}>📝 最新备注：</Text>
               <Text className={styles.noteText}>{alertInfo.note}</Text>
+            </View>
+          )}
+          {alertInfo.sourceInspectionId && (
+            <View className={styles.sourceBox} onClick={() => goToInspection(alertInfo.sourceInspectionId)}>
+              <View className={styles.sourceInfo}>
+                <Text className={styles.sourceLabel}>📋 来源巡检：</Text>
+                <Text className={styles.sourceName}>
+                  {getInspectionById(alertInfo.sourceInspectionId)?.templateName || '巡检记录'}
+                </Text>
+              </View>
+              <Text className={styles.sourceArrow}>→</Text>
             </View>
           )}
           {slaItems && slaItems.length > 0 && (

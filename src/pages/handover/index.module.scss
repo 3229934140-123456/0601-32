@@ -176,6 +176,72 @@
   padding-top: $spacing-xs;
 }
 
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.eventRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.eventMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  @include text-ellipsis;
+  margin-bottom: 6rpx;
+}
+
+.eventMetaRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.statusTag {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-sm;
+  font-weight: $font-weight-medium;
+}
+
+.statusTagProcessing {
+  background: rgba(22, 93, 255, 0.1);
+  color: $color-primary;
+}
+
+.statusTagPending {
+  background: rgba(255, 125, 0, 0.1);
+  color: $color-warning;
+}
+
+.eventAction {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.eventTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
 .createBtn {
   margin-top: $spacing-lg;
   height: 88rpx;

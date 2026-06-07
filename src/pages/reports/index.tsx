@@ -7,6 +7,7 @@ import {
   alertLevelDistribution,
   reportDataByPeriod
 } from '@/data/mockData';
+import { useAppStore } from '@/stores/appStore';
 import type { ChartDataPoint, ReportMetric, DutyRecord } from '@/types';
 
 const timeTabs = [
@@ -21,12 +22,28 @@ type PeriodKey = 'day' | 'week' | 'month';
 
 const ReportsPage: React.FC = () => {
   const [activeTime, setActiveTime] = useState<PeriodKey>('week');
+  const getSlaStatsByPeriod = useAppStore(state => state.getSlaStatsByPeriod);
+  const getDutyRankingByPeriod = useAppStore(state => state.getDutyRankingByPeriod);
 
   const periodData = useMemo(() => {
     return reportDataByPeriod[activeTime] || reportDataByPeriod.week;
   }, [activeTime]);
 
   const { responseTime, alertTrend, dutyRecords } = periodData;
+
+  const slaStats = useMemo(() => {
+    return getSlaStatsByPeriod(activeTime);
+  }, [activeTime, getSlaStatsByPeriod]);
+
+  const dutyRanking = useMemo(() => {
+    const ranking = getDutyRankingByPeriod(activeTime);
+    if (ranking.length > 0) return ranking;
+    return [
+      { rank: 1, name: '张工', alertsHandled: 42, avgResolveTime: 22, overdueCount: 1 },
+      { rank: 2, name: '李工', alertsHandled: 35, avgResolveTime: 28, overdueCount: 3 },
+      { rank: 3, name: '王工', alertsHandled: 29, avgResolveTime: 35, overdueCount: 4 }
+    ].map(item => ({ ...item, name: item.name, alertsHandled: item.alertsHandled, avgResolveTime: item.avgResolveTime, overdueCount: item.overdueCount }));
+  }, [activeTime, getDutyRankingByPeriod]);
 
   const maxResponseTime = useMemo(() => {
     return Math.max(...responseTime.map(d => d.value));
@@ -275,25 +292,25 @@ const ReportsPage: React.FC = () => {
             <View className={styles.slaGrid}>
               <View className={styles.slaItem}>
                 <Text className={styles.slaValue} style={{ color: '#f53f3f' }}>
-                  {activeTime === 'day' ? 1 : activeTime === 'week' ? 8 : 23}
+                  {slaStats.responseOverdueCount}
                 </Text>
                 <Text className={styles.slaLabel}>响应超时次数</Text>
               </View>
               <View className={styles.slaItem}>
                 <Text className={styles.slaValue} style={{ color: '#ff7d00' }}>
-                  {activeTime === 'day' ? 0 : activeTime === 'week' ? 3 : 12}
+                  {slaStats.resolveOverdueCount}
                 </Text>
                 <Text className={styles.slaLabel}>恢复超时次数</Text>
               </View>
               <View className={styles.slaItem}>
                 <Text className={styles.slaValue} style={{ color: '#165dff' }}>
-                  {activeTime === 'day' ? '18' : activeTime === 'week' ? '25' : '32'}
+                  {slaStats.avgResolveTime}
                 </Text>
                 <Text className={styles.slaLabel}>平均恢复时长(分)</Text>
               </View>
               <View className={styles.slaItem}>
                 <Text className={styles.slaValue} style={{ color: '#00b42a' }}>
-                  {activeTime === 'day' ? '92.5' : activeTime === 'week' ? '88.6' : '91.2'}%
+                  {slaStats.slaCompliance}%
                 </Text>
                 <Text className={styles.slaLabel}>SLA 达标率</Text>
               </View>
@@ -306,22 +323,18 @@ const ReportsPage: React.FC = () => {
             <Text className={styles.sectionTitle}>值班排行</Text>
           </View>
           <View className={styles.card}>
-            {[
-              { rank: 1, name: '张工', alerts: 42, avgResolve: 22, overdue: 1 },
-              { rank: 2, name: '李工', alerts: 35, avgResolve: 28, overdue: 3 },
-              { rank: 3, name: '王工', alerts: 29, avgResolve: 35, overdue: 4 }
-            ].map((item, index) => (
-              <View key={index} className={styles.rankItem}>
+            {dutyRanking.map((item, index) => (
+              <View key={item.name} className={styles.rankItem}>
                 <View className={classNames(styles.rankBadge, index === 0 && styles.rankFirst, index === 1 && styles.rankSecond, index === 2 && styles.rankThird)}>
-                  {item.rank}
+                  {index + 1}
                 </View>
                 <View className={styles.rankInfo}>
                   <Text className={styles.rankName}>{item.name}</Text>
-                  <Text className={styles.rankMeta}>处理 {item.alerts} 条 · 平均恢复 {item.avgResolve} 分钟</Text>
+                  <Text className={styles.rankMeta}>处理 {item.alertsHandled} 条 · 平均恢复 {item.avgResolveTime} 分钟</Text>
                 </View>
                 <View className={styles.rankOverdue}>
-                  <Text className={item.overdue > 0 ? styles.overdueBadge : styles.overdueOk}>
-                    {item.overdue > 0 ? `${item.overdue} 次超时` : '0 次超时'}
+                  <Text className={item.overdueCount > 0 ? styles.overdueBadge : styles.overdueOk}>
+                    {item.overdueCount > 0 ? `${item.overdueCount} 次超时` : '0 次超时'}
                   </Text>
                 </View>
               </View>

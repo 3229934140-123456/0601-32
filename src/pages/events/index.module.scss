@@ -114,6 +114,40 @@
   color: $color-text-secondary;
 }
 
+.sourceBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, rgba(114, 46, 209, 0.1) 0%, rgba(114, 46, 209, 0.02) 100%);
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+  margin-top: $spacing-sm;
+  border-left: 6rpx solid #722ed1;
+}
+
+.sourceInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.sourceLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-right: $spacing-xs;
+}
+
+.sourceName {
+  font-size: $font-size-sm;
+  color: #722ed1;
+  font-weight: $font-weight-medium;
+}
+
+.sourceArrow {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+  margin-left: $spacing-sm;
+}
+
 .slaSection {
   display: flex;
   flex-wrap: wrap;

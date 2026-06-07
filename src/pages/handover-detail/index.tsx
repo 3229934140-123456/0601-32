@@ -178,6 +178,56 @@ const HandoverDetailPage: React.FC = () => {
 
         <View className={styles.sectionCard}>
           <Text className={styles.cardTitle}>
+            ⚡ 进行中事件 ({summary.inProgressEvents?.length || 0})
+          </Text>
+          {(!summary.inProgressEvents || summary.inProgressEvents.length === 0) ? (
+            <Text className={styles.emptyHint}>暂无进行中事件</Text>
+          ) : (
+            <View className={styles.listContainer}>
+              {summary.inProgressEvents.map(event => {
+                const alert = summary.unresolvedAlerts?.find((a: Alert) => a.id === event.alertId);
+                const lastAction = alert?.actionHistory?.[0];
+                const statusText = alert?.status === 'acknowledged' ? '处理中' : '待认领';
+                return (
+                  <View
+                    key={event.id}
+                    className={styles.eventItem}
+                    onClick={() => event.alertId && goToAlert(event.alertId)}
+                  >
+                    <View className={styles.eventMain}>
+                      <Text className={styles.eventTitle}>{event.title}</Text>
+                      <View className={styles.eventMetaRow}>
+                        <View className={classNames(
+                          styles.statusTag,
+                          alert?.status === 'acknowledged' ? styles.statusTagProcessing : styles.statusTagPending
+                        )}>
+                          {statusText}
+                        </View>
+                        {lastAction && (
+                          <Text className={styles.eventAction}>
+                            最后动作：{lastAction.title}
+                          </Text>
+                        )}
+                      </View>
+                      {lastAction && (
+                        <Text className={styles.eventOperator}>操作人：{lastAction.operator}</Text>
+                      )}
+                    </View>
+                    <View className={styles.eventRight}>
+                      <Text className={styles.eventTime}>
+                        {lastAction ? dayjs(lastAction.timestamp).format('MM-DD HH:mm') : dayjs(event.timestamp).format('MM-DD HH:mm')}
+                      </Text>
+                      <Text className={styles.arrow}>→</Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          )}
+        </View>
+
+        <View className={styles.sectionCard}>
+          <Text className={styles.cardTitle}>
             📋 进行中巡检 ({summary.pendingInspections?.length || 0})
           </Text>
           {(!summary.pendingInspections || summary.pendingInspections.length === 0) ? (

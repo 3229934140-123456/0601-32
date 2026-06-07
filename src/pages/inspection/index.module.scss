@@ -483,6 +483,142 @@
   color: $color-text-tertiary;
 }
 
+.reportSection {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.reportTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.reportStats {
+  display: flex;
+  justify-content: space-around;
+  padding: $spacing-md 0;
+  margin-bottom: $spacing-md;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+}
+
+.reportStatItem {
+  text-align: center;
+}
+
+.reportStatNum {
+  font-size: 48rpx;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.reportStatLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.sectionSubtitleText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  display: block;
+  margin-bottom: $spacing-sm;
+}
+
+.abnormalSection {
+  margin-bottom: $spacing-md;
+}
+
+.abnormalItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  background: linear-gradient(90deg, rgba(245, 63, 63, 0.08) 0%, rgba(245, 63, 63, 0.02) 100%);
+  border-radius: $radius-md;
+  margin-bottom: $spacing-sm;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.abnormalInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.abnormalName {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.abnormalDesc {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.abnormalActions {
+  display: flex;
+  gap: $spacing-xs;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
+.abnormalBtn {
+  padding: 8rpx 20rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.btnAlert {
+  background: $color-error;
+  color: #fff;
+}
+
+.btnEvent {
+  background: $color-primary;
+  color: #fff;
+}
+
+.reportScreenshotSection {
+  margin-bottom: $spacing-md;
+}
+
+.suggestionSection {
+  background: rgba(22, 93, 255, 0.06);
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+}
+
+.suggestionItem {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xs;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.suggestionDot {
+  color: $color-primary;
+  font-weight: $font-weight-bold;
+  flex-shrink: 0;
+}
+
+.suggestionText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}
+
 .expandHint {
   text-align: center;
   font-size: $font-size-xs;

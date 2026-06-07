@@ -176,6 +176,77 @@
   font-size: $font-size-md;
 }
 
+.eventItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.eventMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  @include text-ellipsis;
+  margin-bottom: 6rpx;
+}
+
+.eventMetaRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: 4rpx;
+}
+
+.statusTag {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-sm;
+  font-weight: $font-weight-medium;
+}
+
+.statusTagProcessing {
+  background: rgba(22, 93, 255, 0.1);
+  color: $color-primary;
+}
+
+.statusTagPending {
+  background: rgba(255, 125, 0, 0.1);
+  color: $color-warning;
+}
+
+.eventAction {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.eventOperator {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.eventRight {
+  flex-shrink: 0;
+  text-align: right;
+  margin-left: $spacing-sm;
+}
+
+.eventTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
 .inspectionItem {
   padding: $spacing-sm 0;
   border-bottom: 2rpx solid $color-divider;
