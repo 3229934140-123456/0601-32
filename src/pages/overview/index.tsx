@@ -1,15 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 import { overviewStats, keyMetrics, topologyNodes, todayRisks } from '@/data/mockData';
-import type { KeyMetric, RiskItem, TopologyNode } from '@/types';
+import { useAppStore } from '@/stores/appStore';
+import type { KeyMetric, RiskItem, TopologyNode, Alert } from '@/types';
 import dayjs from 'dayjs';
 
 const OverviewPage: React.FC = () => {
+  const alerts = useAppStore(state => state.alerts);
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM-DD HH:mm'));
   const [refreshing, setRefreshing] = useState(false);
+
+  const soonExpiringSuppressed = useMemo(() => {
+    const now = dayjs();
+    return alerts.filter(a => {
+      if (a.status !== 'suppressed' || !a.suppressedUntil) return false;
+      const diffMinutes = dayjs(a.suppressedUntil).diff(now, 'minute');
+      return diffMinutes > 0 && diffMinutes <= 30;
+    });
+  }, [alerts]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -115,6 +126,14 @@ const OverviewPage: React.FC = () => {
     Taro.navigateTo({ url: '/pages/events/index' });
   };
 
+  const goToHandover = () => {
+    Taro.navigateTo({ url: '/pages/handover/index' });
+  };
+
+  const goToAlertDetail = (alertId: string) => {
+    Taro.navigateTo({ url: `/pages/events/index?alertId=${alertId}` });
+  };
+
   return (
     <View className={styles.page}>
       <View className={styles.header}>
@@ -206,6 +225,34 @@ const OverviewPage: React.FC = () => {
           </View>
         </View>
 
+        {soonExpiringSuppressed.length > 0 && (
+          <View className={styles.section}>
+            <View className={styles.sectionHeader}>
+              <Text className={styles.sectionTitle}>⏰ 静音即将到期</Text>
+              <Text className={styles.sectionMore} onClick={goToAlerts}>全部 →</Text>
+            </View>
+            <View className={styles.card}>
+              <View className={styles.suppressList}>
+                {soonExpiringSuppressed.map((alert: Alert) => (
+                  <View
+                    key={alert.id}
+                    className={styles.suppressItem}
+                    onClick={() => goToAlertDetail(alert.id)}
+                  >
+                    <View className={styles.suppressInfo}>
+                      <Text className={styles.suppressTitle}>{alert.title}</Text>
+                      <Text className={styles.suppressMeta}>
+                        {dayjs(alert.suppressedUntil || '').diff(dayjs(), 'minute')} 分钟后到期
+                      </Text>
+                    </View>
+                    <Text className={styles.suppressArrow}>→</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </View>
+        )}
+
         <View className={styles.section}>
           <View className={styles.sectionHeader}>
             <Text className={styles.sectionTitle}>今日风险</Text>
@@ -245,11 +292,11 @@ const OverviewPage: React.FC = () => {
                 </View>
                 <Text className={styles.actionLabel}>巡检打卡</Text>
               </View>
-              <View className={styles.actionItem} onClick={goToEvents}>
+              <View className={styles.actionItem} onClick={goToHandover}>
                 <View className={styles.actionIcon} style={{ background: 'rgba(22, 93, 255, 0.1)' }}>
-                  📋
+                  🤝
                 </View>
-                <Text className={styles.actionLabel}>事件记录</Text>
+                <Text className={styles.actionLabel}>值班交接</Text>
               </View>
               <View className={styles.actionItem} onClick={() => Taro.switchTab({ url: '/pages/reports/index' })}>
                 <View className={styles.actionIcon} style={{ background: 'rgba(114, 46, 209, 0.1)' }}>

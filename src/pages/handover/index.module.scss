@@ -1,0 +1,444 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, #3b7eff 100%);
+  padding: $spacing-lg $page-padding;
+  padding-top: calc(#{$spacing-lg} + env(safe-area-inset-top));
+  color: $color-text-white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backBtn {
+  font-size: $font-size-md;
+  width: 80rpx;
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+}
+
+.tabBar {
+  background: $color-bg-card;
+  padding: 0 $page-padding;
+  border-bottom: 2rpx solid $color-divider;
+}
+
+.tabs {
+  display: flex;
+  gap: $spacing-lg;
+}
+
+.tab {
+  padding: $spacing-md 0;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  position: relative;
+  
+  &.tabActive {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48rpx;
+      height: 6rpx;
+      background: $color-primary;
+      border-radius: 3rpx;
+    }
+  }
+}
+
+.content {
+  padding: $spacing-md $page-padding;
+  padding-bottom: 120rpx;
+  height: calc(100vh - 200rpx);
+  box-sizing: border-box;
+}
+
+.summaryCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-around;
+}
+
+.summaryItem {
+  text-align: center;
+  flex: 1;
+}
+
+.summaryNum {
+  font-size: 48rpx;
+  font-weight: $font-weight-bold;
+  display: block;
+  margin-bottom: $spacing-xs;
+}
+
+.summaryLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.sectionCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.sectionCount {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs 0;
+}
+
+.levelDot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+}
+
+.levelDot_critical { background: $color-error; }
+.levelDot_major { background: $color-warning; }
+.levelDot_minor { background: #ffc300; }
+.levelDot_warning { background: $color-warning; }
+.levelDot_info { background: $color-info; }
+
+.itemTitle {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.itemMeta {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.moreHint {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  text-align: center;
+  padding-top: $spacing-xs;
+}
+
+.createBtn {
+  margin-top: $spacing-lg;
+  height: 88rpx;
+  background: $color-primary;
+  color: $color-text-white;
+  border-radius: $radius-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+}
+
+.pendingCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-top: $spacing-md;
+  border: 2rpx solid $color-primary;
+}
+
+.pendingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.pendingTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+}
+
+.pendingBadge {
+  padding: 6rpx 16rpx;
+  background: $color-primary-bg;
+  color: $color-primary;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+}
+
+.pendingInfo {
+  display: flex;
+  margin-bottom: $spacing-xs;
+  font-size: $font-size-sm;
+}
+
+.pendingLabel {
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.pendingValue {
+  color: $color-text-primary;
+  flex: 1;
+}
+
+.pendingNote {
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+  margin-top: $spacing-sm;
+  margin-bottom: $spacing-md;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+}
+
+.pendingNoteText {
+  color: $color-text-secondary;
+}
+
+.pendingActions {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+}
+
+.actionBtn {
+  flex: 1;
+  height: 72rpx;
+  border-radius: $radius-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+}
+
+.btnPrimary {
+  background: $color-primary;
+  color: $color-text-white;
+}
+
+.btnSecondary {
+  background: $color-bg-hover;
+  color: $color-text-secondary;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.historyCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+}
+
+.historyShift {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.historyStatus {
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+}
+
+.statusConfirmed {
+  background: $color-success-bg;
+  color: $color-success;
+}
+
+.statusPending {
+  background: $color-warning-bg;
+  color: $color-warning;
+}
+
+.historyInfo {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xs;
+}
+
+.historyLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.historyTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 120rpx 0;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: $spacing-md;
+  display: block;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $page-padding;
+}
+
+.modalContent {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  width: 100%;
+  max-width: 600rpx;
+  padding: $spacing-xl;
+}
+
+.modalTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.formItem {
+  margin-bottom: $spacing-lg;
+}
+
+.formLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  display: block;
+}
+
+.shiftOptions {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.shiftOption {
+  flex: 1;
+  height: 72rpx;
+  border-radius: $radius-md;
+  background: $color-bg-hover;
+  color: $color-text-secondary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  transition: all $transition-base;
+  
+  &.shiftOptionActive {
+    background: $color-primary-bg;
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.formTextarea {
+  width: 100%;
+  min-height: 180rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.modalActions {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.modalBtn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: $radius-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-md;
+  transition: all $transition-base;
+}
+
+.modalCancel { background: $color-bg-hover; color: $color-text-secondary; }
+.modalConfirm { background: $color-primary; color: $color-text-white; }

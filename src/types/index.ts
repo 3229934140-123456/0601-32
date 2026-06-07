@@ -3,7 +3,9 @@ export type AlertStatus = 'active' | 'acknowledged' | 'suppressed' | 'resolved';
 export type ResourceType = 'host' | 'container' | 'network' | 'storage';
 export type ResourceStatus = 'running' | 'warning' | 'error' | 'stopped';
 export type InspectionStatus = 'pending' | 'in_progress' | 'completed' | 'failed';
-export type ActionType = 'acknowledge' | 'suppress' | 'escalate' | 'note' | 'resolve' | 'create';
+export type ActionType = 'acknowledge' | 'suppress' | 'escalate' | 'note' | 'resolve' | 'create' | 'handover' | 'from_inspection';
+export type HandoverStatus = 'pending' | 'confirmed';
+export type SlaStatus = 'normal' | 'warning' | 'overdue';
 
 export interface OverviewStats {
   serviceHealth: number;
@@ -50,6 +52,15 @@ export interface Resource {
   description?: string;
 }
 
+export interface AlertSlaInfo {
+  responseSlaMinutes: number;
+  resolveSlaMinutes: number;
+  responseStatus: SlaStatus;
+  resolveStatus: SlaStatus;
+  responseUsedMinutes?: number;
+  resolveUsedMinutes?: number;
+}
+
 export interface Alert {
   id: string;
   title: string;
@@ -66,6 +77,8 @@ export interface Alert {
   resolvedBy?: string;
   resolvedAt?: string;
   actionHistory?: AlertAction[];
+  sla?: AlertSlaInfo;
+  sourceInspectionId?: string;
 }
 
 export interface AlertAction {
@@ -87,6 +100,7 @@ export interface Event {
   description: string;
   operator: string;
   timestamp: string;
+  sourceInspectionId?: string;
 }
 
 export interface InspectionTemplate {
@@ -118,6 +132,9 @@ export interface InspectionRecord {
   itemsTotal: number;
   checkItems: CheckedItem[];
   screenshots: ScreenshotItem[];
+  report?: InspectionReport;
+  relatedAlertIds?: string[];
+  relatedEventIds?: string[];
 }
 
 export interface CheckedItem {
@@ -137,6 +154,18 @@ export interface ScreenshotItem {
   itemId?: string;
 }
 
+export interface InspectionReport {
+  id: string;
+  recordId: string;
+  generatedAt: string;
+  totalItems: number;
+  passedItems: number;
+  failedItems: number;
+  abnormalItems: CheckedItem[];
+  suggestions: string[];
+  screenshotCount: number;
+}
+
 export interface ReportMetric {
   label: string;
   value: number;
@@ -154,10 +183,40 @@ export interface DutyRecord {
   name: string;
   alertsHandled: number;
   avgResponseTime: number;
+  avgResolveTime: number;
+  responseOverdueCount: number;
+  resolveOverdueCount: number;
+}
+
+export interface SlaStats {
+  responseOverdueCount: number;
+  resolveOverdueCount: number;
+  avgResponseTime: number;
+  avgResolveTime: number;
+  responseSlaCompliance: number;
+  resolveSlaCompliance: number;
 }
 
 export interface ResourceDetail {
   resource: Resource;
   relatedAlerts: Alert[];
   recentEvents: Event[];
+}
+
+export interface HandoverRecord {
+  id: string;
+  shift: string;
+  handoverPerson: string;
+  takeoverPerson?: string;
+  status: HandoverStatus;
+  createdAt: string;
+  confirmedAt?: string;
+  note?: string;
+  summary: {
+    unresolvedAlerts: Alert[];
+    suppressedAlerts: Alert[];
+    inProgressEvents: Event[];
+    pendingInspections: InspectionRecord[];
+    todayRisks: RiskItem[];
+  };
 }

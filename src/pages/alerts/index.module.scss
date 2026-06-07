@@ -173,6 +173,33 @@
 .tagSuppressed { background: $color-bg-hover; color: $color-text-tertiary; }
 .tagResolved { background: $color-success-bg; color: $color-success; }
 
+.slaTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: $font-size-xs;
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+  margin-top: $spacing-sm;
+  font-weight: $font-weight-medium;
+  width: fit-content;
+}
+
+.slaOverdue {
+  background: rgba(245, 63, 63, 0.1);
+  color: $color-error;
+}
+
+.slaWarning {
+  background: rgba(255, 125, 0, 0.1);
+  color: $color-warning;
+}
+
+.slaNormal {
+  background: rgba(0, 180, 42, 0.1);
+  color: $color-success;
+}
+
 .suppressInfo {
   font-size: $font-size-xs;
   color: $color-text-tertiary;

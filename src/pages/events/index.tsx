@@ -1,25 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import classNames from 'classnames';
-import { events, alerts } from '@/data/mockData';
+import { useAppStore } from '@/stores/appStore';
 import type { Event, Alert, AlertAction } from '@/types';
 
 const EventsPage: React.FC = () => {
   const router = useRouter();
   const alertId = router.params.alertId || 'a1';
-  const [alertInfo, setAlertInfo] = useState<Alert | null>(null);
-  const [eventList, setEventList] = useState<Event[]>([]);
+  
+  const getAlertById = useAppStore(state => state.getAlertById);
+  const addEventNote = useAppStore(state => state.addEventNote);
+  const resolveAlert = useAppStore(state => state.resolveAlert);
+  const events = useAppStore(state => state.events);
+
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [noteText, setNoteText] = useState('');
 
-  useEffect(() => {
-    const alert = alerts.find(a => a.id === alertId);
-    if (alert) {
-      setAlertInfo(alert);
-      const historyEvents: Event[] = (alert.actionHistory || []).map((action: AlertAction) => ({
+  const alertInfo = useMemo(() => getAlertById(alertId as string) || null, [alertId, getAlertById]);
+
+  const eventList = useMemo(() => {
+    const alert = getAlertById(alertId as string);
+    if (alert?.actionHistory && alert.actionHistory.length > 0) {
+      return alert.actionHistory.map((action: AlertAction): Event => ({
         id: action.id,
         alertId: action.alertId,
         title: action.title,
@@ -28,17 +33,10 @@ const EventsPage: React.FC = () => {
         operator: action.operator,
         timestamp: action.timestamp
       }));
-      if (historyEvents.length > 0) {
-        setEventList(historyEvents);
-      } else {
-        const relatedEvents = events.filter(e => e.alertId === alertId);
-        setEventList(relatedEvents.length > 0 ? relatedEvents : events);
-      }
-    } else {
-      const relatedEvents = events.filter(e => e.alertId === alertId);
-      setEventList(relatedEvents.length > 0 ? relatedEvents : events);
     }
-  }, [alertId]);
+    const related = events.filter(e => e.alertId === alertId);
+    return related.length > 0 ? related : events.slice(0, 5);
+  }, [alertId, getAlertById, events]);
 
   const getLevelClass = (level: string) => {
     switch (level) {
@@ -126,6 +124,24 @@ const EventsPage: React.FC = () => {
     }
   };
 
+  const getSlaInfo = (alert: Alert) => {
+    if (!alert.sla) return null;
+    const items = [];
+    if (alert.sla.responseStatus === 'overdue') {
+      items.push({ label: '响应超时', value: `${alert.sla.responseUsedMinutes}分钟`, type: 'error' });
+    } else if (alert.sla.responseStatus === 'warning') {
+      items.push({ label: '响应临近', value: `${alert.sla.responseUsedMinutes}/${alert.sla.responseSlaMinutes}分钟`, type: 'warning' });
+    } else if (alert.acknowledgedAt) {
+      items.push({ label: '响应时长', value: `${alert.sla.responseUsedMinutes}分钟`, type: 'success' });
+    }
+    if (alert.status === 'resolved' && alert.sla.resolveStatus === 'overdue') {
+      items.push({ label: '恢复超时', value: `${alert.sla.resolveUsedMinutes}分钟`, type: 'error' });
+    } else if (alert.status === 'resolved') {
+      items.push({ label: '恢复时长', value: `${alert.sla.resolveUsedMinutes}分钟`, type: 'success' });
+    }
+    return items;
+  };
+
   const formatTime = (timeStr: string) => {
     return dayjs(timeStr).format('HH:mm');
   };
@@ -144,18 +160,7 @@ const EventsPage: React.FC = () => {
       Taro.showToast({ title: '请输入备注内容', icon: 'none' });
       return;
     }
-
-    const newEvent: Event = {
-      id: `e${Date.now()}`,
-      alertId: alertId as string,
-      title: '添加备注',
-      type: 'note',
-      description: noteText,
-      operator: '我',
-      timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss')
-    };
-
-    setEventList(prev => [...prev, newEvent]);
+    addEventNote(alertId as string, noteText, '我');
     setShowNoteModal(false);
     setNoteText('');
     Taro.showToast({ title: '备注已添加', icon: 'success' });
@@ -167,31 +172,14 @@ const EventsPage: React.FC = () => {
       content: '确定此告警已恢复吗？',
       success: (res) => {
         if (res.confirm) {
-          const newEvent: Event = {
-            id: `e${Date.now()}`,
-            alertId: alertId as string,
-            title: '告警恢复',
-            type: 'incident',
-            description: '值班人员确认告警已恢复正常',
-            operator: '我',
-            timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss')
-          };
-          setEventList(prev => [...prev, newEvent]);
-          
-          if (alertInfo) {
-            setAlertInfo({
-              ...alertInfo,
-              status: 'resolved',
-              resolvedBy: '我',
-              resolvedAt: dayjs().format('YYYY-MM-DD HH:mm:ss')
-            });
-          }
-          
+          resolveAlert(alertId as string, '我');
           Taro.showToast({ title: '已标记为恢复', icon: 'success' });
         }
       }
     });
   };
+
+  const slaItems = alertInfo ? getSlaInfo(alertInfo) : [];
 
   return (
     <View className={styles.page}>
@@ -208,7 +196,7 @@ const EventsPage: React.FC = () => {
           </View>
           <View className={styles.alertInfo}>
             <Text className={styles.infoItem}>📍 {alertInfo.resource}</Text>
-            <Text className={styles.infoItem}>� {formatDateTime(alertInfo.createdAt)}</Text>
+            <Text className={styles.infoItem}>🕐 {formatDateTime(alertInfo.createdAt)}</Text>
           </View>
           {alertInfo.acknowledgedBy && (
             <View className={styles.alertInfo}>
@@ -224,6 +212,24 @@ const EventsPage: React.FC = () => {
             <View className={styles.noteBox}>
               <Text className={styles.noteLabel}>📝 最新备注：</Text>
               <Text className={styles.noteText}>{alertInfo.note}</Text>
+            </View>
+          )}
+          {slaItems && slaItems.length > 0 && (
+            <View className={styles.slaSection}>
+              {slaItems.map((item, index) => (
+                <View
+                  key={index}
+                  className={classNames(
+                    styles.slaItem,
+                    item.type === 'error' && styles.slaItemError,
+                    item.type === 'warning' && styles.slaItemWarning,
+                    item.type === 'success' && styles.slaItemSuccess
+                  )}
+                >
+                  <Text className={styles.slaLabel}>{item.label}</Text>
+                  <Text className={styles.slaValue}>{item.value}</Text>
+                </View>
+              ))}
             </View>
           )}
         </View>

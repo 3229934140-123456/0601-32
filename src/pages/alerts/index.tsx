@@ -4,8 +4,8 @@ import Taro from '@tarojs/taro';
 import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import classNames from 'classnames';
-import { alerts as initialAlerts } from '@/data/mockData';
-import type { Alert, AlertLevel, AlertStatus, AlertAction, ActionType } from '@/types';
+import { useAppStore } from '@/stores/appStore';
+import type { Alert, AlertLevel, AlertStatus } from '@/types';
 
 const levelTabs: { key: AlertLevel | 'all'; label: string }[] = [
   { key: 'all', label: '全部' },
@@ -31,19 +31,14 @@ const suppressOptions = [
   { key: '24h', label: '24小时', minutes: 1440 }
 ];
 
-const makeAction = (alertId: string, action: ActionType, title: string, desc: string, operator = '我', extra?: Record<string, string>): AlertAction => ({
-  id: `${alertId}-${Date.now()}`,
-  alertId,
-  action,
-  title,
-  description: desc,
-  operator,
-  timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-  extra
-});
-
 const AlertsPage: React.FC = () => {
-  const [alerts, setAlerts] = useState<Alert[]>(initialAlerts);
+  const alerts = useAppStore(state => state.alerts);
+  const acknowledgeAlert = useAppStore(state => state.acknowledgeAlert);
+  const addEventNote = useAppStore(state => state.addEventNote);
+  const suppressAlert = useAppStore(state => state.suppressAlert);
+  const escalateAlert = useAppStore(state => state.escalateAlert);
+  const resolveAlert = useAppStore(state => state.resolveAlert);
+
   const [activeLevel, setActiveLevel] = useState<AlertLevel | 'all'>('all');
   const [activeStatus, setActiveStatus] = useState<AlertStatus | 'all'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -131,6 +126,30 @@ const AlertsPage: React.FC = () => {
     }
   };
 
+  const getSlaTagClass = (status: string) => {
+    switch (status) {
+      case 'overdue':
+        return styles.slaOverdue;
+      case 'warning':
+        return styles.slaWarning;
+      default:
+        return styles.slaNormal;
+    }
+  };
+
+  const getSlaText = (alert: Alert) => {
+    if (!alert.sla) return null;
+    const { responseStatus, resolveStatus, responseSlaMinutes, resolveSlaMinutes } = alert.sla;
+    if (alert.status === 'resolved') {
+      if (resolveStatus === 'overdue') return `恢复超时(${resolveSlaMinutes}分)`;
+      if (responseStatus === 'overdue') return `响应超时(${responseSlaMinutes}分)`;
+      return null;
+    }
+    if (responseStatus === 'overdue') return `响应超时(${responseSlaMinutes}分)`;
+    if (responseStatus === 'warning') return `响应临近(${responseSlaMinutes}分)`;
+    return null;
+  };
+
   const formatTime = (timeStr: string) => {
     return dayjs(timeStr).format('HH:mm');
   };
@@ -146,29 +165,13 @@ const AlertsPage: React.FC = () => {
     return `静音至 ${until.format('HH:mm')}（约${diffMinutes}分钟）`;
   };
 
-  const addActionToAlert = (alertId: string, action: AlertAction) => {
-    setAlerts(prev => prev.map(a => {
-      if (a.id !== alertId) return a;
-      const history = a.actionHistory || [];
-      return { ...a, actionHistory: [action, ...history] };
-    }));
-  };
-
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
   const handleAcknowledge = (alert: Alert) => {
     if (alert.status === 'acknowledged') return;
-    
-    const action = makeAction(alert.id, 'acknowledge', '告警认领', '已认领此告警，开始处理');
-    addActionToAlert(alert.id, action);
-    
-    setAlerts(prev => prev.map(a =>
-      a.id === alert.id
-        ? { ...a, status: 'acknowledged' as AlertStatus, acknowledgedBy: '我', acknowledgedAt: dayjs().format('YYYY-MM-DD HH:mm:ss') }
-        : a
-    ));
+    acknowledgeAlert(alert.id, '我');
     Taro.showToast({ title: '认领成功', icon: 'success' });
   };
 
@@ -180,13 +183,7 @@ const AlertsPage: React.FC = () => {
 
   const handleSaveNote = () => {
     if (!selectedAlert || !noteText.trim()) return;
-    
-    const action = makeAction(selectedAlert.id, 'note', '添加备注', noteText);
-    addActionToAlert(selectedAlert.id, action);
-    
-    setAlerts(prev => prev.map(a =>
-      a.id === selectedAlert.id ? { ...a, note: noteText } : a
-    ));
+    addEventNote(selectedAlert.id, noteText, '我');
     setShowNoteModal(false);
     Taro.showToast({ title: '备注已保存', icon: 'success' });
   };
@@ -199,25 +196,9 @@ const AlertsPage: React.FC = () => {
 
   const handleSuppress = () => {
     if (!selectedAlert) return;
-    
     const option = suppressOptions.find(o => o.key === selectedSuppressTime);
     if (!option) return;
-    
-    const until = dayjs().add(option.minutes, 'minute').format('YYYY-MM-DD HH:mm:ss');
-    
-    const action = makeAction(
-      selectedAlert.id, 
-      'suppress', 
-      '告警静音', 
-      `静音时长 ${option.label}，将于 ${dayjs(until).format('HH:mm')} 到期`
-    );
-    addActionToAlert(selectedAlert.id, action);
-    
-    setAlerts(prev => prev.map(a =>
-      a.id === selectedAlert.id
-        ? { ...a, status: 'suppressed' as AlertStatus, suppressedUntil: until, suppressedBy: '我' }
-        : a
-    ));
+    suppressAlert(selectedAlert.id, option.minutes, '我');
     setShowSuppressModal(false);
     Taro.showToast({ title: '已静音', icon: 'success' });
   };
@@ -228,15 +209,14 @@ const AlertsPage: React.FC = () => {
       content: `确定要将告警「${alert.title}」升级给值班主管吗？`,
       success: (res) => {
         if (res.confirm) {
-          const action = makeAction(alert.id, 'escalate', '告警升级', '已升级给值班主管，等待响应');
-          addActionToAlert(alert.id, action);
+          escalateAlert(alert.id, '我');
           Taro.showToast({ title: '已升级通知', icon: 'success' });
         }
       }
     });
   };
 
-  const handleTestNotify = (alert: Alert) => {
+  const handleTestNotify = () => {
     Taro.showModal({
       title: '通知测试',
       content: '测试通知将发送到您的手机和邮箱，确认发送吗？',
@@ -258,14 +238,7 @@ const AlertsPage: React.FC = () => {
       content: `确定告警「${alert.title}」已恢复吗？`,
       success: (res) => {
         if (res.confirm) {
-          const action = makeAction(alert.id, 'resolve', '告警恢复', '已确认告警恢复正常');
-          addActionToAlert(alert.id, action);
-          
-          setAlerts(prev => prev.map(a =>
-            a.id === alert.id 
-              ? { ...a, status: 'resolved' as AlertStatus, resolvedBy: '我', resolvedAt: dayjs().format('YYYY-MM-DD HH:mm:ss') } 
-              : a
-          ));
+          resolveAlert(alert.id, '我');
           Taro.showToast({ title: '已标记为恢复', icon: 'success' });
         }
       }
@@ -307,6 +280,8 @@ const AlertsPage: React.FC = () => {
       </View>
     );
   };
+
+  const slaText = (alert: Alert) => getSlaText(alert);
 
   return (
     <View className={styles.page}>
@@ -380,6 +355,12 @@ const AlertsPage: React.FC = () => {
                   </View>
                 </View>
 
+                {slaText(alert) && (
+                  <View className={classNames(styles.slaTag, getSlaTagClass(alert.sla?.responseStatus || 'normal'))}>
+                    ⏱️ {slaText(alert)}
+                  </View>
+                )}
+
                 {alert.status === 'suppressed' && alert.suppressedUntil && (
                   <View className={styles.suppressInfo} style={{ marginTop: 12 }}>
                     <Text>🔇</Text>
@@ -444,7 +425,7 @@ const AlertsPage: React.FC = () => {
                   </View>
                   <View
                     className={classNames(styles.actionBtn, styles.btnSuccess)}
-                    onClick={() => handleTestNotify(alert)}
+                    onClick={handleTestNotify}
                   >
                     📧 通知测试
                   </View>

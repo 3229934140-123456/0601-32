@@ -114,6 +114,50 @@
   color: $color-text-secondary;
 }
 
+.slaSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.slaItem {
+  flex: 1;
+  min-width: 45%;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  text-align: center;
+}
+
+.slaItemError {
+  background: rgba(245, 63, 63, 0.1);
+}
+
+.slaItemWarning {
+  background: rgba(255, 125, 0, 0.1);
+}
+
+.slaItemSuccess {
+  background: rgba(0, 180, 42, 0.1);
+}
+
+.slaLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.slaValue {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.slaItemError .slaValue { color: $color-error; }
+.slaItemWarning .slaValue { color: $color-warning; }
+.slaItemSuccess .slaValue { color: $color-success; }
+
 .eventCount {
   font-size: $font-size-sm;
   color: $color-text-tertiary;

@@ -1,36 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import classNames from 'classnames';
-import { resources, alerts, events } from '@/data/mockData';
-import type { Resource, Alert, Event } from '@/types';
+import { resources } from '@/data/mockData';
+import { useAppStore } from '@/stores/appStore';
+import type { Resource, Alert, Event, AlertAction } from '@/types';
 
 const ResourceDetailPage: React.FC = () => {
   const router = useRouter();
   const resourceId = router.params.id || 'h1';
-  const [resource, setResource] = useState<Resource | null>(null);
-  const [relatedAlerts, setRelatedAlerts] = useState<Alert[]>([]);
-  const [recentEvents, setRecentEvents] = useState<Event[]>([]);
+  const alerts = useAppStore(state => state.alerts);
 
-  useEffect(() => {
-    const res = resources.find(r => r.id === resourceId);
-    if (res) {
-      setResource(res);
-      
-      const related = alerts.filter(a => a.resource === res.name).slice(0, 5);
-      setRelatedAlerts(related);
-      
-      const recent = events
-        .filter(e => {
-          const alert = alerts.find(a => a.id === e.alertId);
-          return alert && alert.resource === res.name;
-        })
-        .slice(0, 5);
-      setRecentEvents(recent);
-    }
-  }, [resourceId]);
+  const resource = useMemo(() => 
+    resources.find(r => r.id === resourceId) || null,
+    [resourceId]
+  );
+
+  const relatedAlerts = useMemo(() => {
+    if (!resource) return [];
+    return alerts.filter(a => a.resource === resource.name);
+  }, [resource, alerts]);
+
+  const recentEvents = useMemo(() => {
+    const events: (Event & { alertId: string })[] = [];
+    relatedAlerts.forEach(alert => {
+      const history = alert.actionHistory || [];
+      history.forEach((action: AlertAction) => {
+        events.push({
+          id: action.id,
+          alertId: alert.id,
+          title: action.title,
+          type: action.action === 'note' ? 'note' : action.action === 'create' || action.action === 'resolve' ? 'incident' : 'action',
+          description: action.description,
+          operator: action.operator,
+          timestamp: action.timestamp
+        });
+      });
+    });
+    return events
+      .sort((a, b) => dayjs(b.timestamp).valueOf() - dayjs(a.timestamp).valueOf())
+      .slice(0, 10);
+  }, [relatedAlerts]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -122,6 +134,19 @@ const ResourceDetailPage: React.FC = () => {
     }
   };
 
+  const getEventDotClass = (type: string) => {
+    switch (type) {
+      case 'incident':
+        return styles.eventDotIncident;
+      case 'action':
+        return styles.eventDotAction;
+      case 'note':
+        return styles.eventDotNote;
+      default:
+        return '';
+    }
+  };
+
   const formatTime = (timeStr: string) => {
     return dayjs(timeStr).format('HH:mm');
   };
@@ -130,7 +155,7 @@ const ResourceDetailPage: React.FC = () => {
     return dayjs(timeStr).format('MM-DD HH:mm');
   };
 
-  const getProgressColor = (value: number, type: 'cpu' | 'memory' | 'disk') => {
+  const getProgressColor = (value: number) => {
     if (value >= 90) return '#f53f3f';
     if (value >= 70) return '#ff7d00';
     if (value >= 50) return '#ffc300';
@@ -159,9 +184,7 @@ const ResourceDetailPage: React.FC = () => {
   return (
     <View className={styles.page}>
       <View className={styles.header}>
-        <View className={styles.backBtn} onClick={goBack}>
-          ← 返回
-        </View>
+        <View className={styles.backBtn} onClick={goBack}>← 返回</View>
         <View className={styles.resourceBasic}>
           <View className={styles.resourceIcon}>{getTypeIcon(resource.type)}</View>
           <View className={styles.resourceInfo}>
@@ -216,7 +239,7 @@ const ResourceDetailPage: React.FC = () => {
                       className={styles.metricFill}
                       style={{
                         width: `${resource.cpu}%`,
-                        background: getProgressColor(resource.cpu, 'cpu')
+                        background: getProgressColor(resource.cpu)
                       }}
                     />
                   </View>
@@ -233,7 +256,7 @@ const ResourceDetailPage: React.FC = () => {
                       className={styles.metricFill}
                       style={{
                         width: `${resource.memory}%`,
-                        background: getProgressColor(resource.memory, 'memory')
+                        background: getProgressColor(resource.memory)
                       }}
                     />
                   </View>
@@ -250,7 +273,7 @@ const ResourceDetailPage: React.FC = () => {
                       className={styles.metricFill}
                       style={{
                         width: `${resource.disk}%`,
-                        background: getProgressColor(resource.disk, 'disk')
+                        background: getProgressColor(resource.disk)
                       }}
                     />
                   </View>
@@ -281,7 +304,7 @@ const ResourceDetailPage: React.FC = () => {
                   <View className={classNames(styles.alertLevelBar, getLevelClass(alert.level))} />
                   <View className={styles.alertContent}>
                     <View className={styles.alertHeader}>
-                      <Text className={styles.alertTitle}>{alert.title}</Text>
+                      <Text className={styles.alertItemTitle}>{alert.title}</Text>
                       <View className={classNames(styles.levelBadge, getLevelClass(alert.level))}>
                         {getLevelText(alert.level)}
                       </View>
@@ -289,6 +312,9 @@ const ResourceDetailPage: React.FC = () => {
                     <Text className={styles.alertDesc}>{alert.description}</Text>
                     <View className={styles.alertFooter}>
                       <Text className={styles.alertTime}>{formatDateTime(alert.createdAt)}</Text>
+                      <Text className={styles.alertStatusText}>
+                        {alert.status === 'resolved' ? '已恢复' : alert.status === 'acknowledged' ? '已认领' : '活动'}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -309,9 +335,13 @@ const ResourceDetailPage: React.FC = () => {
             </View>
           ) : (
             <View className={styles.eventList}>
-              {recentEvents.map((event: Event) => (
-                <View key={event.id} className={styles.eventItem}>
-                  <View className={styles.eventDot} />
+              {recentEvents.map((event) => (
+                <View
+                  key={event.id}
+                  className={styles.eventItem}
+                  onClick={() => goToAlert(event.alertId)}
+                >
+                  <View className={classNames(styles.eventDot, getEventDotClass(event.type))} />
                   <View className={styles.eventContent}>
                     <View className={styles.eventHeader}>
                       <Text className={styles.eventTitle}>{event.title}</Text>

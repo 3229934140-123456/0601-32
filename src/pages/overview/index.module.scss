@@ -352,6 +352,46 @@
   flex-shrink: 0;
 }
 
+.suppressList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.suppressItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  background: linear-gradient(90deg, rgba(255, 125, 0, 0.08) 0%, rgba(255, 125, 0, 0.02) 100%);
+  border-radius: $radius-md;
+  border-left: 6rpx solid $color-warning;
+}
+
+.suppressInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.suppressTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  @include text-ellipsis;
+  margin-bottom: 4rpx;
+}
+
+.suppressMeta {
+  font-size: $font-size-xs;
+  color: $color-warning;
+  font-weight: $font-weight-medium;
+}
+
+.suppressArrow {
+  color: $color-text-tertiary;
+  font-size: $font-size-md;
+  margin-left: $spacing-sm;
+}
+
 .quickActions {
   display: flex;
   justify-content: space-around;

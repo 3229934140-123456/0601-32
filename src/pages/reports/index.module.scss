@@ -317,3 +317,103 @@
   font-size: $font-size-sm;
   color: $color-text-tertiary;
 }
+
+.slaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+}
+
+.slaItem {
+  padding: $spacing-md;
+  background: $color-bg-hover;
+  border-radius: $radius-md;
+  text-align: center;
+}
+
+.slaValue {
+  font-size: 52rpx;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  margin-bottom: $spacing-xs;
+}
+
+.slaLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.rankItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md 0;
+  border-bottom: 1rpx solid $color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.rankBadge {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: $radius-round;
+  background: $color-bg-tertiary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.rankFirst {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb800 100%);
+  color: #fff;
+}
+
+.rankSecond {
+  background: linear-gradient(135deg, #c0c4cc 0%, #909399 100%);
+  color: #fff;
+}
+
+.rankThird {
+  background: linear-gradient(135deg, #e6a23c 0%, #b88230 100%);
+  color: #fff;
+}
+
+.rankInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.rankName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.rankMeta {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.rankOverdue {
+  flex-shrink: 0;
+}
+
+.overdueBadge {
+  font-size: $font-size-xs;
+  color: $color-error;
+  font-weight: $font-weight-medium;
+}
+
+.overdueOk {
+  font-size: $font-size-xs;
+  color: $color-success;
+  font-weight: $font-weight-medium;
+}

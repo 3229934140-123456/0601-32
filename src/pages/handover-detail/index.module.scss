@@ -1,0 +1,301 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, #3b7eff 100%);
+  padding: $spacing-lg $page-padding;
+  padding-top: calc(#{$spacing-lg} + env(safe-area-inset-top));
+  color: $color-text-white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backBtn {
+  font-size: $font-size-md;
+  width: 80rpx;
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+}
+
+.content {
+  padding: $spacing-md $page-padding;
+  padding-bottom: 200rpx;
+  height: calc(100vh - 180rpx);
+  box-sizing: border-box;
+}
+
+.infoCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.infoLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.infoValue {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+}
+
+.shiftBadge {
+  padding: 6rpx 16rpx;
+  background: $color-primary-bg;
+  color: $color-primary;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+}
+
+.statusBadge {
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+}
+
+.statusConfirmed {
+  background: $color-success-bg;
+  color: $color-success;
+}
+
+.statusPending {
+  background: $color-warning-bg;
+  color: $color-warning;
+}
+
+.noteCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  display: block;
+}
+
+.noteText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}
+
+.sectionCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-md $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.emptyHint {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  text-align: center;
+  padding: $spacing-md 0;
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.alertItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.levelBar {
+  width: 6rpx;
+  height: 32rpx;
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+
+.levelCritical { background: $color-error; }
+.levelMajor { background: $color-warning; }
+.levelMinor { background: #ffc300; }
+.levelWarning { background: $color-warning; }
+.levelInfo { background: $color-info; }
+
+.alertContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.alertTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  margin-bottom: 4rpx;
+}
+
+.alertMeta {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.arrow {
+  color: $color-text-tertiary;
+  font-size: $font-size-md;
+}
+
+.inspectionItem {
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.inspectionTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.inspectionProgress {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.progressBar {
+  flex: 1;
+  height: 12rpx;
+  background: $color-bg-hover;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: $color-primary;
+  border-radius: $radius-round;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.riskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.riskDot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+  margin-top: 8rpx;
+}
+
+.riskContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.riskTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+}
+
+.riskDesc {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.riskTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 200rpx 0;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: $spacing-md;
+  display: block;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $color-bg-card;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.confirmBtn {
+  height: 88rpx;
+  background: $color-primary;
+  color: $color-text-white;
+  border-radius: $radius-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+}

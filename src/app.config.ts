@@ -7,7 +7,9 @@ export default defineAppConfig({
     'pages/reports/index',
     'pages/events/index',
     'pages/settings/index',
-    'pages/resource-detail/index'
+    'pages/resource-detail/index',
+    'pages/handover/index',
+    'pages/handover-detail/index'
   ],
   window: {
     backgroundTextStyle: 'light',

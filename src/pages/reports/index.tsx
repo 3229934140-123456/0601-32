@@ -269,6 +269,68 @@ const ReportsPage: React.FC = () => {
 
         <View className={styles.section}>
           <View className={styles.sectionHeader}>
+            <Text className={styles.sectionTitle}>SLA 统计</Text>
+          </View>
+          <View className={styles.card}>
+            <View className={styles.slaGrid}>
+              <View className={styles.slaItem}>
+                <Text className={styles.slaValue} style={{ color: '#f53f3f' }}>
+                  {activeTime === 'day' ? 1 : activeTime === 'week' ? 8 : 23}
+                </Text>
+                <Text className={styles.slaLabel}>响应超时次数</Text>
+              </View>
+              <View className={styles.slaItem}>
+                <Text className={styles.slaValue} style={{ color: '#ff7d00' }}>
+                  {activeTime === 'day' ? 0 : activeTime === 'week' ? 3 : 12}
+                </Text>
+                <Text className={styles.slaLabel}>恢复超时次数</Text>
+              </View>
+              <View className={styles.slaItem}>
+                <Text className={styles.slaValue} style={{ color: '#165dff' }}>
+                  {activeTime === 'day' ? '18' : activeTime === 'week' ? '25' : '32'}
+                </Text>
+                <Text className={styles.slaLabel}>平均恢复时长(分)</Text>
+              </View>
+              <View className={styles.slaItem}>
+                <Text className={styles.slaValue} style={{ color: '#00b42a' }}>
+                  {activeTime === 'day' ? '92.5' : activeTime === 'week' ? '88.6' : '91.2'}%
+                </Text>
+                <Text className={styles.slaLabel}>SLA 达标率</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <View className={styles.section}>
+          <View className={styles.sectionHeader}>
+            <Text className={styles.sectionTitle}>值班排行</Text>
+          </View>
+          <View className={styles.card}>
+            {[
+              { rank: 1, name: '张工', alerts: 42, avgResolve: 22, overdue: 1 },
+              { rank: 2, name: '李工', alerts: 35, avgResolve: 28, overdue: 3 },
+              { rank: 3, name: '王工', alerts: 29, avgResolve: 35, overdue: 4 }
+            ].map((item, index) => (
+              <View key={index} className={styles.rankItem}>
+                <View className={classNames(styles.rankBadge, index === 0 && styles.rankFirst, index === 1 && styles.rankSecond, index === 2 && styles.rankThird)}>
+                  {item.rank}
+                </View>
+                <View className={styles.rankInfo}>
+                  <Text className={styles.rankName}>{item.name}</Text>
+                  <Text className={styles.rankMeta}>处理 {item.alerts} 条 · 平均恢复 {item.avgResolve} 分钟</Text>
+                </View>
+                <View className={styles.rankOverdue}>
+                  <Text className={item.overdue > 0 ? styles.overdueBadge : styles.overdueOk}>
+                    {item.overdue > 0 ? `${item.overdue} 次超时` : '0 次超时'}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View className={styles.section}>
+          <View className={styles.sectionHeader}>
             <Text className={styles.sectionTitle}>值班表现</Text>
           </View>
           <View className={styles.card}>
